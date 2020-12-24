@@ -5,7 +5,7 @@
 #include "spi.h"
 #include "dma.h"
 #include "protocal.h"
-
+#include "sensor.h"
 
 void heart_beat(void)
 {
@@ -41,6 +41,7 @@ int main()
 	DMAx_Rx_Init(DMA1_Channel5,(u32)&USART1->DR,(u32)CommRxBuf,COMM_RX_BUF_SIZE);	// DMA_Channel5初始化
 	DMAx_Send_Init(DMA1_Channel4,(u32)&USART1->DR,(u32)CommSendBuf,COMM_SEND_BUF_SIZE);	// DMA_Channel4初始化
 	
+	Sensor_Init();
 	LED_Init();
 	USART1_Init(9600);
 
@@ -55,6 +56,7 @@ int main()
 		if(i==200)
 		{
 			//heart_beat();
+			Sensor_Read();
 			i=0;
 		}
 		delay_ms(10);

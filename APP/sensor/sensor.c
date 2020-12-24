@@ -14,4 +14,16 @@ void Sensor_Init(void)
 	
 	SENSOR_CS = 1 ;
 	SPI2_Init();
+	
+}
+
+void Sensor_Read(void)
+{
+	u8 index = 0;
+	u8 index2 = 0 ;
+	index = SPI2_ReadWriteByte(0x90);
+	index2 = SPI2_ReadWriteByte(0x90);
+	printf("%o\t%o\t",index,index2);
+	// to do !!!
+	
 }

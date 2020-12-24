@@ -12,5 +12,6 @@
 #define	SENSOR_CS 		PBout(6)  		//SENSORµÄÆ¬Ñ¡ÐÅºÅ
 
 void Sensor_Init(void);
+void Sensor_Read(void);
 
 #endif
