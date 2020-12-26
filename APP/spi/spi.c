@@ -9,14 +9,14 @@ void SPI1_Init(void)
 	SPI_InitTypeDef  SPI_InitStructure;
 	
 	/* SPI的IO口和SPI外设打开时钟 */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB2PeriphClockCmd(SPI1_PORT_RCC, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
 	
 	/* SPI的IO口设置 */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Pin = SPI1_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_Init(SPI1_PORT, &GPIO_InitStructure);
 
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;  //设置SPI单向或者双向的数据模式:SPI设置为双线双向全双工
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;		//设置SPI工作模式:设置为主SPI
@@ -71,14 +71,14 @@ void SPI2_Init(void)
 	SPI_InitTypeDef  SPI_InitStructure;
 	
 	/* SPI的IO口和SPI外设打开时钟 */
-    RCC_APB2PeriphClockCmd(	RCC_APB2Periph_GPIOB, ENABLE );
+    RCC_APB2PeriphClockCmd(	SPI2_PORT_RCC, ENABLE );
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
 	
 	/* SPI的IO口设置 */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Pin = SPI2_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  //PB13/14/15复用推挽输出 
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(SPI2_PORT, &GPIO_InitStructure);
 
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;  //设置SPI单向或者双向的数据模式:SPI设置为双线双向全双工
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;		//设置SPI工作模式:设置为主SPI

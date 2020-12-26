@@ -3,18 +3,22 @@
 
 #include "system.h"
 
+//*********************LED操作说明********************/
+//led0--PA8
+//led1--PD2
+
 /*  LED时钟端口、引脚定义 */
-#define LED_PORT 			GPIOC   
-#define LED_PIN 			(GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7)
-#define LED_PORT_RCC		RCC_APB2Periph_GPIOC
+#define LED0_PORT 			GPIOA   
+#define LED0_PIN 			GPIO_Pin_8
+#define LED0_PORT_RCC		RCC_APB2Periph_GPIOA
 
+#define LED1_PORT 			GPIOD   
+#define LED1_PIN 			GPIO_Pin_2
+#define LED1_PORT_RCC		RCC_APB2Periph_GPIOD
 
-#define led1 PCout(0)
-#define led2 PCout(1)
-#define led3 PCout(2)
-
+#define	led1  PAout(8) 
+#define	led2  PDout(2)
 
 void LED_Init(void);
-
 
 #endif
