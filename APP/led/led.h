@@ -3,11 +3,11 @@
 
 #include "system.h"
 
-//*********************LED²Ù×÷ËµÃ÷********************/
+//*********************LEDæ“ä½œè¯´æ˜********************/
 //led0--PA8
 //led1--PD2
 
-/*  LEDÊ±ÖÓ¶Ë¿Ú¡¢Òı½Å¶¨Òå */
+/*  LEDæ—¶é’Ÿç«¯å£ã€å¼•è„šå®šä¹‰ */
 #define LED0_PORT 			GPIOA   
 #define LED0_PIN 			GPIO_Pin_8
 #define LED0_PORT_RCC		RCC_APB2Periph_GPIOA

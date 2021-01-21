@@ -1,62 +1,95 @@
+/********************************************************************************
+* @FileName: sensor.c
+* @Author: Zhang Shen
+* @Version: 1.0
+* @Date: 2021-1-21
+* @Description: The functions about using the ADS8332
+********************************************************************************/
+
 #include "sensor.h"
 
-/* ADS8332 初始化 */
+/*********************************************************
+* Function_Name : ADS8332_Init
+* Parameter     : void
+* Return        : void
+* Description   : Initialize the ADS8332
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void ADS8332_Init(void)
 {
 	u16 cfr_config_write = 0x0000 ;
 	u16 cfr_config_read	 = 0x0000 ;
 	ADS8332_Init_Port();
 	ADS8332_Reset();
-	// 写入配置信息
+	
+	// Write the config into ADS8322
 	cfr_config_write = (ADS8332_WRITE_CFR|ADS8332_INT_CLK|ADS8332_TR_MANUL|ADS8332_SMPL_250K|ADS8332_EOC_LOW\
 										|ADS8332_P10_EOC|ADS8332_P10_OUT|ADS8332_AUTONAP_DIS|ADS8332_NAP_DIS|ADS8332_PD_DIS|ADS8332_NOSW_RST);
 	ADS8332_Write_CFR(cfr_config_write);
-	// 检查配置信息是否正确写入
+	
+	// Check whether the config is correct
 	cfr_config_read = ADS8332_Read_CFR();
 	if(cfr_config_read != cfr_config_write)
 	{
 		ADS8332_ERROR_Handler();
 	}
-	
 }
 
-/* ADS8332 需要用到的端口进行初始化 */
+/*********************************************************
+* Function_Name : ADS8332_Init_Port
+* Parameter     : void
+* Return        : void
+* Description   : Initialize the ports used by the ADS8332
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void ADS8332_Init_Port(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
 	
-	// 开启时钟
+	// Enable the clock
 	RCC_APB2PeriphClockCmd(ADS8332_CS_CLK|ADS8332_RESET_CLK|ADS8332_CONVST_CLK|ADS8332_EOC_CLK, ENABLE);
 	
-	// 设置CS端口为推挽输出
+	// Initialize CS as Push-Pull-Output
 	GPIO_InitStructure.GPIO_Pin = ADS8332_CS_PORT;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(ADS8332_CS_GPIO, &GPIO_InitStructure);
 	
-	// 设置RESET端口为推挽输出
+	// Initialize RESET as Push-Pull-Output
 	GPIO_InitStructure.GPIO_Pin = ADS8332_RESET_PORT;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(ADS8332_RESET_GPIO, &GPIO_InitStructure);
 	
-	// 设置CONVST端口为推挽输出
+	// Intialzie CONVST as Push-Pull-Output
 	GPIO_InitStructure.GPIO_Pin = ADS8332_CONVST_PORT;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(ADS8332_CONVST_GPIO, &GPIO_InitStructure);	
 	
-	// 设置EOC端口为上拉输入
+	// Intialzie EOC as Pull-Up-Input
 	GPIO_InitStructure.GPIO_Pin = ADS8332_EOC_PORT;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(ADS8332_EOC_GPIO, &GPIO_InitStructure);	
 
-	// SPI2端口初始化
+	// Intialzie SPI2
 	SPI2_Init();
 }
 
-/* ADS8332复位 */
+/*********************************************************
+* Function_Name : ADS8332_Reset
+* Parameter     : void
+* Return        : void
+* Description   : Reset the ADS8332
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void ADS8332_Reset(void)
 {
 	SPI2_CLK 				= 0 ;
@@ -72,7 +105,16 @@ void ADS8332_Reset(void)
 	delay_ms(1);	
 }
 
-/* ADS8332 写入配置信息 */
+/*********************************************************
+* Function_Name : ADS8332_Write_CFR
+* Parameter     :
+		@CFR_Data			the config ready for uploading
+* Return        : void
+* Description   : Write the config into the ADS8332
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void ADS8332_Write_CFR(u16 CFR_Data)
 {
 	CFR_Data = (ADS8332_WRITE_CFR | (0x0fff&CFR_Data));
@@ -82,7 +124,16 @@ void ADS8332_Write_CFR(u16 CFR_Data)
 	ADS8332_CS	= CS_IDLE ;
 }
 
-/* ADS8332 读取配置信息 */
+/*********************************************************
+* Function_Name : ADS8332_Read_CFR
+* Parameter     : void
+* Return        :
+		@ConFR 				the config read from the ADS8332
+* Description   : Read the config from the ADS8332
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 u16 ADS8332_Read_CFR(void)
 {
 	u16 ConFR = 0x0000 ; 
@@ -95,8 +146,16 @@ u16 ADS8332_Read_CFR(void)
 	return ConFR;
 }
 
-/* ADS8332 模数转换器开始转换 
-	CONVST 信号下降开始采集数据 */
+/*********************************************************
+* Function_Name : ADS8332_Convst
+* Parameter     : void
+* Return        : void
+* Description   : Start the conversion by controling the 
+									CONVST port.
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void ADS8332_Convst(void)
 {
 	ADS8332_CS			= CS_IDLE ;
@@ -107,7 +166,16 @@ void ADS8332_Convst(void)
 	ADS8332_CONVST	= 1 ;
 }
 
-/* ADS8332 通道选择 */
+/*********************************************************
+* Function_Name : ADS8332_Channel_Sel
+* Parameter     :
+		@Channel_x		the AD channel selected
+* Return        : void
+* Description   : Select the AD channel
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void ADS8332_Channel_Sel(u16 Channel_x)
 {
 	ADS8332_CS = CS_SELECT ;
@@ -115,7 +183,17 @@ void ADS8332_Channel_Sel(u16 Channel_x)
 	ADS8332_CS = CS_IDLE ;
 }
 
-/* ADS8332 读取转换数据 */
+/*********************************************************
+* Function_Name : ADS8332_Read_Data
+* Parameter     :
+		@Channel_x		the AD channel selected
+* Return        :
+		@ConFR				the data read from the ADS8332
+* Description   : Read data from the selected AD channel
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 u16 ADS8332_Read_Data(u16 Channel_x)
 {
 	u8 	Status_EOC = 1 ;
@@ -140,20 +218,56 @@ u16 ADS8332_Read_Data(u16 Channel_x)
 	return ConFR ;
 }
 
-/* ADS8332 异常处理 */
+/*********************************************************
+* Function_Name : ADS8332_ERROR_Handler
+* Parameter     : void
+* Return        : void
+* Description   : Handle the error condition
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void ADS8332_ERROR_Handler(void)
 {
 	printf("ADS8332 error !!!\n");
 }
 
-/* ADS8332 测试代码
-   在主函数调用   
-	请在调用前先进行初始化 */
+/*********************************************************
+* Function_Name : ADS8332_Vol_to_Value
+* Parameter     :
+		@value				the value directly read from ADS8332
+* Return        :
+		@Voltage			the voltage transformed from the value
+* Description   : Transform the value to voltage
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
+float ADS8332_Vol_to_Value(u16 value)
+{
+	float Voltage = 0 ;
+	Voltage = (float)((float)(value) / ADS8332_RATIO);
+	Voltage = (float)(Voltage * ADS8332_REF); 
+	return Voltage;
+}
+
+/*********************************************************
+* Function_Name : ADS8332_Test
+* Parameter     : void
+* Return        : void
+* Description   : The test code for this driver;
+									Please use the funciton in the main();
+									BEFORE THE FUNC(),DO CALL THE INITILAI().
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void ADS8332_Test(void)
 {
 	u16 ads8332_val;
 	float Voltage_val;
 	ads8332_val=ADS8332_Read_Data(ADS8332_Channel_0);
-	Voltage_val=((float)ads8332_val*3.3f)/65536.0f;
+	Voltage_val = ADS8332_Vol_to_Value(ads8332_val);
+	//Voltage_val=((float)ads8332_val*3.3f)/65536.0f;
 	printf("\r\nvPower_test1=%6f  \r\n",Voltage_val);
 }

@@ -1,33 +1,31 @@
 #include "led.h"
 
 /*******************************************************************************
-* º¯ Êı Ãû         : LED_Init
-* º¯Êı¹¦ÄÜ		   : LED³õÊ¼»¯º¯Êı
-* Êä    Èë         : ÎŞ
-* Êä    ³ö         : ÎŞ
+* å‡½ æ•° å         : LED_Init
+* å‡½æ•°åŠŸèƒ½		   : LEDåˆå§‹åŒ–å‡½æ•°
+* è¾“    å…¥         : æ— 
+* è¾“    å‡º         : æ— 
 *******************************************************************************/
 void LED_Init()
 {
-	GPIO_InitTypeDef GPIO_InitStructure;//¶¨Òå½á¹¹Ìå±äÁ¿
+	GPIO_InitTypeDef GPIO_InitStructure;//å®šä¹‰ç»“æ„ä½“å˜é‡
 	
 	RCC_APB2PeriphClockCmd(LED0_PORT_RCC,ENABLE);
 	
-	GPIO_InitStructure.GPIO_Pin=LED0_PIN;  //Ñ¡ÔñÄãÒªÉèÖÃµÄIO¿Ú
-	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;	 //ÉèÖÃÍÆÍìÊä³öÄ£Ê½
-	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	  //ÉèÖÃ´«ÊäËÙÂÊ
-	GPIO_Init(LED0_PORT,&GPIO_InitStructure); 	   /* ³õÊ¼»¯GPIO */
+	GPIO_InitStructure.GPIO_Pin=LED0_PIN;  //é€‰æ‹©ä½ è¦è®¾ç½®çš„IOå£
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;	 //è®¾ç½®æ¨æŒ½è¾“å‡ºæ¨¡å¼
+	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	  //è®¾ç½®ä¼ è¾“é€Ÿç‡
+	GPIO_Init(LED0_PORT,&GPIO_InitStructure); 	   /* åˆå§‹åŒ–GPIO */
 	
-	GPIO_SetBits(LED0_PORT,LED0_PIN);   //½«LED¶Ë¿ÚÀ­¸ß£¬Ï¨ÃğËùÓĞLED
+	GPIO_SetBits(LED0_PORT,LED0_PIN);   //å°†LEDç«¯å£æ‹‰é«˜ï¼Œç†„ç­æ‰€æœ‰LED
 	
 	RCC_APB2PeriphClockCmd(LED1_PORT_RCC,ENABLE);
 	
-	GPIO_InitStructure.GPIO_Pin=LED1_PIN;  //Ñ¡ÔñÄãÒªÉèÖÃµÄIO¿Ú
-	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;	 //ÉèÖÃÍÆÍìÊä³öÄ£Ê½
-	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	  //ÉèÖÃ´«ÊäËÙÂÊ
-	GPIO_Init(LED1_PORT,&GPIO_InitStructure); 	   /* ³õÊ¼»¯GPIO */
+	GPIO_InitStructure.GPIO_Pin=LED1_PIN;  //é€‰æ‹©ä½ è¦è®¾ç½®çš„IOå£
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;	 //è®¾ç½®æ¨æŒ½è¾“å‡ºæ¨¡å¼
+	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	  //è®¾ç½®ä¼ è¾“é€Ÿç‡
+	GPIO_Init(LED1_PORT,&GPIO_InitStructure); 	   /* åˆå§‹åŒ–GPIO */
 	
-	GPIO_ResetBits(LED1_PORT,LED1_PIN);   //½«LED¶Ë¿ÚÀ­µÍ£¬µãÁÁ
+	GPIO_ResetBits(LED1_PORT,LED1_PIN);   //å°†LEDç«¯å£æ‹‰ä½ï¼Œç‚¹äº®
 }
-
-
 

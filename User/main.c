@@ -1,3 +1,10 @@
+/********************************************************************************
+* @FileName: main.c
+* @Author: Zhang Shen
+* @Version: 1.0
+* @Date: 2021-1-21
+* @Description: The main function of the Project
+********************************************************************************/
 #include "system.h"
 #include "SysTick.h"
 #include "led.h"
@@ -19,27 +26,36 @@ void heart_beat(void)
 			DMAx_Enable(DMA1_Channel4,6);		
 			while(1)
 			{
-				if(DMA_GetFlagStatus(DMA1_FLAG_TC4)!=0)//ÅÐ¶ÏÍ¨µÀ4´«ÊäÍê³É
+				// Judge whetheer the transmission finished
+				// åˆ¤æ–­ä¼ è¾“æ˜¯å¦å®Œæˆ
+				if(DMA_GetFlagStatus(DMA1_FLAG_TC4)!=0)
 				{
 					DMA_ClearFlag(DMA1_FLAG_TC4);
 					break;
 				}
 			}
 }
-/*******************************************************************************
-* º¯ Êý Ãû         : main
-* º¯Êý¹¦ÄÜ		   : Ö÷º¯Êý
-* Êä    Èë         : ÎÞ
-* Êä    ³ö         : ÎÞ
-*******************************************************************************/
+
+/*********************************************************
+* Function_Name : main
+* Parameter     : void
+* Return        : void
+* Description   : The main function
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 int main()
 {
 	u8 i=0; 
 	SysTick_Init(72);
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  // ÖÐ¶ÏÓÅÏÈ¼¶·Ö×é ·Ö2×é
-	
-	DMAx_Rx_Init(DMA1_Channel5,(u32)&USART1->DR,(u32)CommRxBuf,COMM_RX_BUF_SIZE);	// DMA_Channel5³õÊ¼»¯
-	DMAx_Send_Init(DMA1_Channel4,(u32)&USART1->DR,(u32)CommSendBuf,COMM_SEND_BUF_SIZE);	// DMA_Channel4³õÊ¼»¯
+	// Divide the NVIC into 2 group
+	// å°†ä¼˜å…ˆçº§åˆ†ä¸ºä¸¤ç»„
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); 
+	// Initialize the DMA_Channel5 & Channel4
+	// åˆå§‹åŒ– DMA_Channel5 & DMA_Channel4 
+	DMAx_Rx_Init(DMA1_Channel5,(u32)&USART1->DR,(u32)CommRxBuf,COMM_RX_BUF_SIZE);	
+	DMAx_Send_Init(DMA1_Channel4,(u32)&USART1->DR,(u32)CommSendBuf,COMM_SEND_BUF_SIZE);
 	
 	ADS8332_Init();
 	LED_Init();

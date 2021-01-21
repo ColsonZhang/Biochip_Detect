@@ -1,3 +1,11 @@
+/********************************************************************************
+* @FileName: sensor.h
+* @Author: Zhang Shen
+* @Version: 1.0
+* @Date: 2021-1-21
+* @Description: The head file of sensor.c
+********************************************************************************/
+
 #ifndef _ADS8332_H
 #define _ADS8332_H
 
@@ -6,6 +14,9 @@
 #include "SysTick.h"
 #include "usart.h"
 
+/*---------------------------------------*/
+/*        THE CLK&GPIO&PORT DEFINE       */
+/*---------------------------------------*/
 // CS 
 #define ADS8332_CS_CLK 				RCC_APB2Periph_GPIOB
 #define ADS8332_CS_GPIO 			GPIOB
@@ -23,19 +34,23 @@
 #define ADS8332_EOC_GPIO 			GPIOB
 #define ADS8332_EOC_PORT 			GPIO_Pin_1
 
-// 位带操作宏定义
+/*---------------------------------------*/
+/*         THE BIT OUT&IN DEFINE         */
+/*---------------------------------------*/
 #define	ADS8332_RESET 				PBout(0)
-//#define	ADS8332_EOC_OUT	 			PBout(1)
-#define	ADS8332_EOC_IN	 			PBin(1)
 #define	ADS8332_CS 						PBout(6)
 #define	ADS8332_CONVST 				PBout(10)
+#define	ADS8332_EOC_IN	 			PBin(1)
 
-// CS 信号宏定义
-#define CS_SELECT 		0							//CS 选中
-#define CS_IDLE   		1							//CS 未选中
+/*---------------------------------------*/
+/*         THE SIGNAL FLAG DEFINE        */
+/*---------------------------------------*/
+#define CS_SELECT 		0				//CS Selected
+#define CS_IDLE   		1				//CS Unselected
 
-
-//ADS8332 register and command defines
+/*---------------------------------------*/
+/*  ADS8332 REGISTER & COMMAND DEFINES   */
+/*---------------------------------------*/
 #define ADS8332_Channel_0            ((uint16_t)0x0000)//Select analog input channel 0
 #define ADS8332_Channel_1            ((uint16_t)0x1000)//Select analog input channel 1
 #define ADS8332_Channel_2            ((uint16_t)0x2000)//Select analog input channel 2
@@ -59,10 +74,19 @@
 #define ADS8332_P10_OUT              ((uint16_t)0x0020)//Pin 10 I/O select for daisy-chain mode operation
 #define ADS8332_AUTONAP_DIS          ((uint16_t)0x0010)//Auto-Nap Power-Down enable/disable
 #define ADS8332_NAP_DIS              ((uint16_t)0x0008)//Nap Power-Down.
-#define ADS8332_PD_DIS                ((uint16_t)0x0004)//Deep Power-Down
+#define ADS8332_PD_DIS               ((uint16_t)0x0004)//Deep Power-Down
 #define ADS8332_TAG_OUT              ((uint16_t)0x0002)//TAG bit output enable
 #define ADS8332_NOSW_RST             ((uint16_t)0x0001)//Software reset
 
+/*---------------------------------------*/
+/*            ADS8332 PARAMETERS         */
+/*---------------------------------------*/
+#define ADS8332_RATIO  (0xFFFF)  //Precise Ratio
+#define ADS8332_REF    (2500)    //Unit = mV
+
+/*---------------------------------------*/
+/*         THE FUNCTIONS DEFINE          */
+/*---------------------------------------*/
 void ADS8332_Init(void);
 void ADS8332_Init_Port(void);
 void ADS8332_Reset(void);
@@ -72,6 +96,7 @@ void ADS8332_Convst(void);
 void ADS8332_Channel_Sel(u16 Channel_x);
 u16 ADS8332_Read_Data(u16 Channel_x);
 void ADS8332_ERROR_Handler(void);
+float ADS8332_Vol_to_Value(u16 value);
 void ADS8332_Test(void);
 
 #endif

@@ -16,7 +16,7 @@
    |--keilkilll.bat  //  自动清楚编译链接中间过程产生的文件
    |--LICENCE        //  工程的开源证书
    |--README.md      //  工程的解释文件
-   |--orthers        //  Keil5软件的工程配置文件
+   |--others        //  Keil5软件的工程配置文件
 
 ```
 

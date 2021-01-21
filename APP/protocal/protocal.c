@@ -1,15 +1,26 @@
+/********************************************************************************
+* @FileName: protocal.c
+* @Author: Zhang Shen
+* @Version: 1.0
+* @Date: 2020-12-24
+* @Description: The protocal dealing with the communication
+********************************************************************************/
+
 #include "protocal.h"
 
 u8 CommRxBuf[COMM_RX_BUF_SIZE]={0};
 u8 CommSendBuf[COMM_SEND_BUF_SIZE]={0};
 
-
-/*******************************************************************************
-* º¯ Êı Ãû         : CommRx_IRQ
-* º¯Êı¹¦ÄÜ		   : ´®¿ÚÊı¾İÉ¸Ñ¡¹éÀà
-* Êä    Èë         : ÎŞ
-* Êä    ³ö         : ÎŞ
-*******************************************************************************/
+/*********************************************************
+* Function_Name : CommRx_IRQ
+* Parameter     : void
+* Return        : void
+* Description   : Sort the data from the serial;
+									Actually this is a state-machine.
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void CommRx_IRQ(void){
 	static u8 Comm_Rx_Status = COMM_RX_FREE_1;
 	static u8 ucPit = 0;
@@ -26,7 +37,9 @@ void CommRx_IRQ(void){
 			case COMM_RX_FREE_1 :
 				if(ucData == 0x55)
 				{
-					Comm_Rx_Status = COMM_RX_FREE_2;//×ÔÓÉ×´Ì¬ÏÂ½ÓÊÕµ½0x55ÈÏÎª¿ªÊ¼
+					// Begin the movement of receiving data
+					// è‡ªç”±çŠ¶æ€ä¸‹æ¥æ”¶åˆ°0x55è®¤ä¸ºå¼€å§‹
+					Comm_Rx_Status = COMM_RX_FREE_2;
 				}
 				break;
 			
@@ -34,7 +47,9 @@ void CommRx_IRQ(void){
 			case COMM_RX_FREE_2:
 				if(ucData == 0x00)
 				{
-					Comm_Rx_Status = COMM_RX_FLAG;  //½ÓÊÕÖ¡Í·¿ªÊ¼½ÓÊÕÊı¾İ
+					// Receive the head-data
+					// æ¥æ”¶å¸§å¤´å¼€å§‹æ¥æ”¶æ•°æ®
+					Comm_Rx_Status = COMM_RX_FLAG;  
 				}
 				else
 				{
@@ -94,12 +109,16 @@ void CommRx_IRQ(void){
 	}
 }
 
-/*******************************************************************************
-* º¯ Êı Ãû         : USART_Deal
-* º¯Êı¹¦ÄÜ		   : ¶ÔÉ¸Ñ¡µÃµ½µÄÊı¾İ½øĞĞ´¦Àí
-* Êä    Èë         : ÎŞ
-* Êä    ³ö         : ÎŞ
-*******************************************************************************/
+
+/*********************************************************
+* Function_Name : USART_Deal
+* Parameter     : void
+* Return        : void
+* Description   : Deal the events according to the flag
+* Author				: Zhang Shen
+* Create_Time   : 2021-01-21
+* Modify_Record : null
+**********************************************************/
 void USART_Deal(u8 CmdFlag)
 {
 	static u8 heart = 0 ;
