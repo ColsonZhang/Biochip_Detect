@@ -11,7 +11,8 @@
 #define SPI2_PORT						GPIOB
 #define SPI2_PORT_RCC				RCC_APB2Periph_GPIOB
 
-
+#define SPI2_CLK						PBout(13)
+#define SPI2_MOSI						PBout(15)
 
 void SPI1_Init(void);			 //初始化SPI1口
 void SPI1_SetSpeed(u8 SpeedSet); //设置SPI1速度   
@@ -21,4 +22,8 @@ void SPI2_Init(void);			 //初始化SPI2口
 void SPI2_SetSpeed(u8 SpeedSet); //设置SPI2速度   
 u8 SPI2_ReadWriteByte(u8 TxData);//SPI2总线读写一个字节
 
+u16 SPI2_ReadWrite_U16(u16 TxData);
+void SPI2_Write_U16(u16 TxData);
+u16 SPI2_Read_U16(void);
+	
 #endif

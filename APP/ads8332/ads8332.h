@@ -1,39 +1,18 @@
-#ifndef _ADS8332_H
-#define _ADS8332_H
+/**
+  ******************************************************************************
+  * @file    T_ADS8332.h
+  * @author  LuJ
+  * @version V3.5.0
+  * @date    2015-04-02
+  * @brief   16位ADC头文件管理
+  ******************************************************************************
+  * (C) Copyright Vango Technoglogy, Inc. 2015
+  ******************************************************************************
+  */
+#ifndef __T_ADS8332_H
+#define __T_ADS8332_H   
 
-#include "system.h"
-#include "spi.h"
-#include "SysTick.h"
-#include "usart.h"
-
-// CS 
-#define ADS8332_CS_CLK 				RCC_APB2Periph_GPIOB
-#define ADS8332_CS_GPIO 			GPIOB
-#define ADS8332_CS_PORT 			GPIO_Pin_6
-// RESET
-#define ADS8332_RESET_CLK 		RCC_APB2Periph_GPIOB
-#define ADS8332_RESET_GPIO 		GPIOB
-#define ADS8332_RESET_PORT 		GPIO_Pin_0
-// CONVST
-#define ADS8332_CONVST_CLK 		RCC_APB2Periph_GPIOB
-#define ADS8332_CONVST_GPIO 	GPIOB
-#define ADS8332_CONVST_PORT 	GPIO_Pin_10
-// EOC/INT/CDI
-#define ADS8332_EOC_CLK 			RCC_APB2Periph_GPIOB
-#define ADS8332_EOC_GPIO 			GPIOB
-#define ADS8332_EOC_PORT 			GPIO_Pin_1
-
-// λ�������궨��
-#define	ADS8332_RESET 				PBout(0)
-//#define	ADS8332_EOC_OUT	 			PBout(1)
-#define	ADS8332_EOC_IN	 			PBin(1)
-#define	ADS8332_CS 						PBout(6)
-#define	ADS8332_CONVST 				PBout(10)
-
-// CS �źź궨��
-#define CS_SELECT 		0							//CS ѡ��
-#define CS_IDLE   		1							//CS δѡ��
-
+#include "stm32f10x.h"
 
 //ADS8332 register and command defines
 #define ADS8332_Channel_0            ((uint16_t)0x0000)//Select analog input channel 0
@@ -63,15 +42,22 @@
 #define ADS8332_TAG_OUT              ((uint16_t)0x0002)//TAG bit output enable
 #define ADS8332_NOSW_RST             ((uint16_t)0x0001)//Software reset
 
-void ADS8332_Init(void);
-void ADS8332_Init_Port(void);
-void ADS8332_Reset(void);
-void ADS8332_Write_CFR(u16 cfr_data);
-u16 ADS8332_Read_CFR(void);
-void ADS8332_Convst(void);
-void ADS8332_Channel_Sel(u16 Channel_x);
-u16 ADS8332_Read_Data(u16 Channel_x);
-void ADS8332_ERROR_Handler(void);
-void ADS8332_Test(void);
+//位带操作,实现51类似的GPIO控制功能
+//具体实现思想,参考<<CM3权威指南>>第五章(87页~92页).
+#define ADS8332_RESET_OUT   *((volatile unsigned long  *)((((GPIOC_BASE+12) & 0xF0000000)+0x2000000+(((GPIOC_BASE+12) &0xFFFFF)<<5)+(4<<2))))//PC4
+#define ADS8332_CONVST_OUT  *((volatile unsigned long  *)((((GPIOC_BASE+12) & 0xF0000000)+0x2000000+(((GPIOC_BASE+12) &0xFFFFF)<<5)+(5<<2))))//PC5
+#define ADS8332_EOC_IN      *((volatile unsigned long  *)((((GPIOA_BASE+8 ) & 0xF0000000)+0x2000000+(((GPIOA_BASE+8 ) &0xFFFFF)<<5)+(4<<2))))//PA4
+#define ADS8332_SCK_OUT     *((volatile unsigned long  *)((((GPIOA_BASE+12) & 0xF0000000)+0x2000000+(((GPIOA_BASE+12) &0xFFFFF)<<5)+(5<<2))))//PA5
+#define ADS8332_MISO_IN     *((volatile unsigned long  *)((((GPIOA_BASE+8 ) & 0xF0000000)+0x2000000+(((GPIOA_BASE+8 ) &0xFFFFF)<<5)+(6<<2))))//PA6
+#define ADS8332_MOSI_OUT    *((volatile unsigned long  *)((((GPIOA_BASE+12) & 0xF0000000)+0x2000000+(((GPIOA_BASE+12) &0xFFFFF)<<5)+(7<<2))))//PA7
 
+void T_ADS8332_Init(void);//初始化
+void T_ADS8332_Reset(void);
+void T_ADS8332_Convst(void);
+uint16_t T_ADS8332_ReadCFR(void);
+void T_ADS8332_WriteCFR(uint16_t cfr_data);
+void T_ADS8332_ChannelSel(uint16_t ADS8332_Channel_x);
+uint16_t T_ADS8332_ReadData(uint16_t ADS8332_Channel_x);
+void T_ADS8332_Test(void);
+        
 #endif

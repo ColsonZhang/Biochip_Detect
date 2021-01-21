@@ -123,3 +123,30 @@ u8 SPI2_ReadWriteByte(u8 TxData)
  		    
 }
 
+u16 SPI2_ReadWrite_U16(u16 TxData)
+{		 			 
+ 
+	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);//等待发送区空  
+	
+	SPI_I2S_SendData(SPI2, TxData); //通过外设SPIx发送一个byte  数据
+		
+	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET); //等待接收完一个byte  
+ 
+	return SPI_I2S_ReceiveData(SPI2); //返回通过SPIx最近接收的数据	
+ 		    
+}
+
+
+
+void SPI2_Write_U16(u16 TxData)
+{
+	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);//等待发送区空  
+	SPI_I2S_SendData(SPI2, TxData); //通过外设SPIx发送一个byte  数据
+}
+
+u16 SPI2_Read_U16(void)
+{
+	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET); //等待接收完一个byte  
+ 
+	return SPI_I2S_ReceiveData(SPI2); //返回通过SPIx最近接收的数据		
+}
